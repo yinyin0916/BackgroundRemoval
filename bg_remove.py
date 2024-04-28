@@ -3,6 +3,9 @@ from rembg import remove
 from PIL import Image
 from io import BytesIO
 import base64
+from pyecharts.charts import Bar
+from pyecharts import options as opts
+import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide", page_title="Vis Your MoT Model!")
 
@@ -47,3 +50,17 @@ if my_upload is not None:
         fix_image(upload=my_upload)
 else:
     fix_image("./zebra.jpg")
+
+
+
+
+c = (Bar()
+        # TODO: metric name
+.add_xaxis(["Microsoft", "Amazon", "IBM", "Oracle", "Google", "Alibaba"])
+    # TODO: metric value
+.add_yaxis('2017-2018 Revenue in (billion $)', [21.2, 20.4, 10.3, 6.08, 4, 2.2])
+.set_global_opts(title_opts=opts.TitleOpts(title="Top cloud providers 2018", subtitle="2017-2018 Revenue"),
+                    toolbox_opts=opts.ToolboxOpts())
+.render_embed() # generate a local HTML file
+)
+components.html(c, width=1000, height=1000)
