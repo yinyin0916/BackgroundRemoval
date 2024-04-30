@@ -19,6 +19,14 @@ def convert_image(img):
     byte_im = buf.getvalue()
     return byte_im
 
+values = st.slider(
+    'Select a range of values',
+    0, 30, (0, 30))
+st.write('Values:', values)
+st.write(f"{values}")
+
+
+
 PAGES = ['Video1', 'Video2']
 
 st.sidebar.write("## Upload and download :gear:")
