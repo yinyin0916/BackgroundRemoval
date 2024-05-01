@@ -7,6 +7,7 @@ from pyecharts.charts import Bar
 from pyecharts import options as opts
 import streamlit.components.v1 as components
 import cv2
+from plot_tracking import * 
 
 st.set_page_config(layout="wide", page_title="Vis Your MoT Model!")
 
@@ -29,38 +30,43 @@ if 'page' not in st.session_state:
 col1, col2 = st.columns(2)
 my_upload = st.sidebar.file_uploader("Upload your model outcome", type=["txt"])
 
-video_options = [f'Video{i}' for i in range(1, 15)]
-dict_video = {1: 450, 2: 600, 3: 1500, 4: 1050, 5: 837, 6: 1194, 7: 500, 8: 625, 9: 525, 10: 654, 11: 900, 12: 900, 13: 750, 14: 750}
+
+dict_video = {1: 450, 2: 600, 3: 1500, 4: 1050, 5: 837,  6: 1194, 7: 500, 8: 625, 9: 525, 10: 654, 11: 900, 12: 900, 13: 750, 14: 750}
 
 
 
 video = st.sidebar.selectbox(
     'Video You Want To Explore',
-    video_options,
+    (f'Video{i}' for i in [2,4,5,9,10,11,13]),
     index=0,
 )
 no_frames = dict_video[int(video[5:])]
 
 values = st.slider(
     'Select a range of values',
-    0, no_frames, (0, no_frames), key='values'
+    1, no_frames, (1, no_frames), key='values'
 )
 
 st.write('Values:', values)
 
 # upload:txt file, video_no: video, values: start and end frame
-def generate_image(upload, video_no, values):
-    train_no = [2,4,5,9,10,11,13]
-    test_no = [1,3,6,7,8,12,14]
-    text_file_path = f"/MOT16/test/MOT16-{str(video_no[5:]).zfill(2)}/det/det.txt"
-    if int(video_no[5:]) in train_no:
-        text_file_path = f"/MOT16/train/MOT16-{str(video_no[5:]).zfill(2)}/det/det.txt"
-    col1.write("Your Model MoT")
+def generate_image(my_upload, video_no, values):
+    
+    text_file_path = f"/workspaces/Vis_MoT/MOT16/train/MOT16-{str(video_no[5:]).zfill(2)}/det/det.txt"
+    img_path = f"/workspaces/Vis_MoT/MOT16/train/MOT16-{str(video_no[5:]).zfill(2)}/img1/{str(values[0]).zfill(6)}.txt"
+
+    col1.write("Ground Truth MoT")
+    draw_box(text_file_path, img_path, values[0])
+    col1.write("\n")
+    draw_box(text_file_path, img_path, values[1])
     # col1.image(image)
 
     # fixed = remove(image)
-    col2.write("? MoT")
-    # col2.image(fixed)
+    col2.write("Your Model MoT")
+    draw_box(my_upload, img_path, values[0])
+    col2.write("\n")
+    draw_box(my_upload, img_path, values[1])
+
     st.sidebar.markdown("\n")
     # st.sidebar.download_button("Download visualization", convert_image(fixed), "fixed.png", "image/png")
 
@@ -71,8 +77,8 @@ if my_upload is not None:
         # fix_image(upload=my_upload)
 # else:
     # fix_image("./zebra.jpg")
-
-
+if my_upload:
+    generate_image(my_upload=my_upload, video_no=video, values = values)
 
 
 c = (Bar()

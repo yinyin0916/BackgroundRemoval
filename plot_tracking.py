@@ -184,6 +184,15 @@ _COLORS = np.array(
     ]
 ).astype(np.float32).reshape(-1, 3)
 
+
+def draw_box(bbox, img, frame_id):
+    print(frame_id)
+    frame_ids, tids, tlwhs_lst, scores = get_bbox(bbox, frame_id)
+    print(frame_ids)
+    # image = plot_tracking(img, tlwhs_lst, tids, frame_id=frame_ids[0])
+    # output_path = f'output_image_{frame_id}.jpg'
+    # cv2.imwrite(output_path, image)
+
 #Sample Usage
 '''
 bboxes = '2024_04_24_21_29_03.txt'
